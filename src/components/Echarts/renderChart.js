@@ -1,4 +1,4 @@
-import echarts from './echarts.min';
+import echarts from 'echarts/dist/echarts.min';
 import toString from '../../util/toString';
 
 export default function renderChart(props) {
