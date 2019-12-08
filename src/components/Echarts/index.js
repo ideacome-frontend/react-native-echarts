@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
-import renderChart from './renderChart';
-import echarts from 'echarts/dist/echarts.min';
+import renderChart from './renderChart.js';
+// import echarts from 'echarts/dist/echarts.min';
 
 export default class App extends Component {
 
@@ -10,9 +10,9 @@ export default class App extends Component {
     super(props);
     this.setNewOption = this.setNewOption.bind(this);
   }
-  
 
-  componentWillReceiveProps(nextProps) {
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if(nextProps.option !== this.props.option) {
       this.refs.chart.reload();
     }
@@ -20,6 +20,10 @@ export default class App extends Component {
 
   setNewOption(option) {
     this.refs.chart.postMessage(JSON.stringify(option));
+  }
+
+  onMessage = (event) => {
+    this.props.onPress ? this.props.onPress(JSON.parse(event.nativeEvent.data)) : null
   }
 
   render() {
@@ -36,7 +40,7 @@ export default class App extends Component {
           scalesPageToFit={Platform.OS !== 'ios'}
           originWhitelist={['*']}
           source={Platform.OS === 'ios' ? require('./tpl.html') : {uri:'file:///android_asset/tpl.html'}}
-          onMessage={event => this.props.onPress ? this.props.onPress(JSON.parse(event.nativeEvent.data)) : null}
+          onMessage={this.onMessage}
         />
       </View>
     );
